@@ -15,7 +15,7 @@ class Graph:
     # the n>0 case, where we read a general graph in a different format.
     # self.perm, self.dists, self.n are the key variables to be set up.
     def __init__(self, n, filename):
-        file = open(filename)  # + ".txt")
+        file = open(filename)
         numNodes = 0
         points = []
         self.dists = []
@@ -58,10 +58,10 @@ class Graph:
                     if i == int(line[2:3]):
                         alreadyExplored[1] = True
 
-                if alreadyExplored[0] == False:
+                if not alreadyExplored[0]:
                     numNodes += 1
                     nodes.append(int(line[0:1]))
-                if alreadyExplored[1] == False:
+                if not alreadyExplored[1]:
                     numNodes += 1
                     nodes.append(int(line[2:3]))
 
@@ -184,13 +184,13 @@ class Graph:
     # CUSTOM ALGORITHM 'TEMPERATE' ASSOCIATED HELPER FUNCTIONS
     def createDistAverage(self, n):     # Returns the average distance for a given node n.
         mean = 0.0
-        sum = 0
+        sumDists = 0
 
         for i in range(self.n):
             if i != n:
-                sum += self.dists[n][i]
+                sumDists += self.dists[n][i]
 
-        mean = sum / self.n
+        mean = sumDists / self.n
 
         return mean
 
@@ -283,7 +283,6 @@ class Graph:
                     route.append(f[0])
                     explored.append(f[0])
                 else:
-                    print(route)
                     node = self.bestAvailableNodeTrans(endNode, explored)[1]
                     if node != -1:
                         route.append(node)
@@ -306,16 +305,3 @@ class Graph:
 
                         self.perm = route
                         return route
-
-
-
-
-
-
-
-
-
-
-
-
-
