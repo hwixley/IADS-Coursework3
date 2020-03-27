@@ -182,7 +182,7 @@ class Graph:
         self.perm = greedyOrder
 
     # CUSTOM ALGORITHM 'TEMPERATE' ASSOCIATED HELPER FUNCTIONS
-    def createDistAverage(self, n):     # Returns the average distance for a given node n.
+    def createDistAverage(self, n):  # Returns the average distance for a given node n.
         mean = 0.0
         sumDists = 0
 
@@ -194,7 +194,7 @@ class Graph:
 
         return mean
 
-    def createDistAverages(self):   # Returns list of tuples (av. dist. , node) ordered by av. dist. smallest to highest
+    def createDistAverages(self):  # Returns list of tuples (av. dist. , node) ordered by av. dist. smallest to highest
         meanList = []
 
         for i in range(self.n):
@@ -202,7 +202,7 @@ class Graph:
 
         return sorted(meanList, key=itemgetter(0))
 
-    def findNodeTransitions(self, node):    # Returns ordered list of node transitions ordered from low to high
+    def findNodeTransitions(self, node):  # Returns ordered list of node transitions ordered from low to high
         trans = []
         for i in range(self.n):
             if i != node:
@@ -222,17 +222,17 @@ class Graph:
                     expBool = True
 
             if not expBool:
-                return t    # If the given node is available, then this node's respective transition is returned
+                return t  # If the given node is available, then this node's respective transition is returned
 
-        return -1   # If no node transition is available for n, the function returns -1
+        return -1  # If no node transition is available for n, the function returns -1
 
-    def createFragment(self, node, explored):   # Returns the best available fragment for a given node
+    def createFragment(self, node, explored):  # Returns the best available fragment for a given node
         expandNode = self.bestAvailableNodeTrans(node, explored)
 
         if expandNode != -1:
-            return [node, expandNode[1]]    # A single fragment represented by: [origin node , destination node]
+            return [node, expandNode[1]]  # A single fragment represented by: [origin node , destination node]
         else:
-            return []   # If there is no available fragment, function returns []
+            return []  # If there is no available fragment, function returns []
 
     def cleanFragments(self, fragments):
         explored = []
@@ -256,7 +256,7 @@ class Graph:
         fragments = []
         explored = []
 
-        for i in range(self.n-1, -1, -1):
+        for i in range(self.n - 1, -1, -1):
             node = meanList[i][1]
 
             frag = self.createFragment(node, explored)
@@ -265,6 +265,25 @@ class Graph:
 
         return self.cleanFragments(fragments)
 
+    def removeRepetitions(self, listVar):  # Removes all element repetitions from the input list
+        removables = []
+        listVar.reverse()
+        for a in range(len(listVar)):
+            for b in range(len(listVar)):
+                if (listVar[a] == listVar[b]) and (a != b):
+                    explored = False
+                    for e in removables:
+                        if listVar[a] == e:
+                            explored = True
+                            break
+                    if not explored:
+                        removables.append(listVar[a])
+
+        for r in removables:
+            listVar.remove(r)
+
+        return listVar
+
     # CUSTOM ALGORITHM 'TEMPERATE' APPROXIMATE OPTIMAL ROUTE FINDING FUNCTION
     def createRoute(self):
         frags = self.createFragments()
@@ -272,7 +291,7 @@ class Graph:
         fragments = frags[1:]
         explored = [frags[0][0], frags[0][1]]
 
-        while len(route) != self.n-1:
+        while len(route) != self.n - 1:
             for f in fragments:
                 endNode = route[len(route) - 1]
 
@@ -283,12 +302,12 @@ class Graph:
                     route.append(f[0])
                     explored.append(f[0])
                 else:
-                    node = self.bestAvailableNodeTrans(endNode, explored)[1]
+                    node = self.bestAvailableNodeTrans(endNode, explored)
                     if node != -1:
-                        route.append(node)
-                        explored.append(node)
-                    else:
-                        print("no node transition found for " + str(endNode))
+                        route.append(node[1])
+                        explored.append(node[1])
+                    else:  # No node transition found, thereby this route is already complete but contains tautologies
+                        return self.removeRepetitions(route)
 
                     if len(route) == self.n - 1:
                         lastNode = -1
