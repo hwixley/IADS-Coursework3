@@ -306,7 +306,7 @@ class Graph:
                     if node != -1:
                         route.append(node[1])
                         explored.append(node[1])
-                    else:  # No node transition found, thereby this route is already complete but contains tautologies
+                    else:  # No node transition found, thereby this route is already complete but contains repetitions
                         return self.removeRepetitions(route)
 
                     if len(route) == self.n - 1:

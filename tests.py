@@ -1,6 +1,4 @@
 import random
-import sys
-
 import graph
 import os
 
@@ -34,8 +32,6 @@ def createRandomEuclideanGraph(size, lowerX, upperX, lowerY, upperY, numTests):
                         strN = ""
 
                     file.write(" " + spacesX + str(randX) + "  " + spacesY + str(randY) + strN)
-                #print("Filename: " + "randomEuclidGraph" + str(a) + "_size"
-                #      + str(size) + ".txt")
                 break
         except IOError:
             if a == numTests - 1:
@@ -62,8 +58,6 @@ def createRandomMetricGraph(size, lowerEdge, upperEdge, numTests):
                         rand = random.randint(lowerEdge, upperEdge)
 
                         file.write(str(n) + " " + str(k) + " " + str(rand) + strN)
-                #print("Filename: " + "randomMetricGraph" + str(a) + "_size" +
-                #      str(size) + ".txt")
                 break
         except IOError:
             if a == numTests - 1:
@@ -146,14 +140,19 @@ def calculateCostDiffs(sizeEuclid, sizeMetric, numTests):
         meanDiffMETRIC) + " % " + sign + " cost to that of greedy for Metric graphs.")
 
 
+# Default project graph initializations
 g1 = graph.Graph(-1, "cities25")
 g2 = graph.Graph(-1, "cities50")
 g3 = graph.Graph(-1, "cities75")
 g4 = graph.Graph(2, "sixnodes")
 
+# Custom algorithm implemented against g3, with 2-Op and Swap refinement algorithms.
 g3.createRoute()
 g3.TwoOptHeuristic()
 g3.swapHeuristic()
 print(g3.tourValue())
 print("\n")
-calculateCostDiffs(100, 10, 10)
+
+# Testing algorithm efficiency of Greedy VS my custom algorithm 'Temperate'
+# INPUTS: size Euclid graph = 60, size Metric graph = 10, # of randomly generated graphs to test = 500.
+calculateCostDiffs(60, 10, 500)
