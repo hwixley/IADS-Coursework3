@@ -146,13 +146,13 @@ g2 = graph.Graph(-1, "cities50")
 g3 = graph.Graph(-1, "cities75")
 g4 = graph.Graph(2, "sixnodes")
 
-# Custom algorithm implemented against g3, with 2-Op and Swap refinement algorithms.
+# Custom algorithm implemented against g3, with Swap and 2-Op refinement algorithms.
 g3.createRoute()
-g3.TwoOptHeuristic()
 g3.swapHeuristic()
+g3.TwoOptHeuristic()
 print(g3.tourValue())
 print("\n")
 
 # Testing algorithm efficiency of Greedy VS my custom algorithm 'Temperate'
 # INPUTS: size Euclid graph = 60, size Metric graph = 10, # of randomly generated graphs to test = 500.
-calculateCostDiffs(60, 10, 500)
+calculateCostDiffs(30, 8, 500)

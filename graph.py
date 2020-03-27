@@ -160,6 +160,7 @@ class Graph:
                     if self.tryReverse(i, j):
                         better = True
 
+
     # Implement the Greedy heuristic which builds a tour starting
     # from node 0, taking the closest (unused) node as 'next'
     # each time.
