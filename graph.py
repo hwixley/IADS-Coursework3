@@ -296,10 +296,10 @@ class Graph:
         frags = self.createFragments()  # Fragments created
         route = [frags[0][0], frags[0][1]]  # Route initialized with nodes of first fragment
         fragments = frags[1:]   # Available fragment list updated
-        explored = [frags[0][0], frags[0][1]]   # Already explored list initialized with nodes of first fragment
+        explored = [frags[0][0], frags[0][1]]   # 'Already explored' list initialized with nodes of first fragment
 
-        while len(route) != self.n - 1:
-            for f in fragments:  # Tries to utilize the maximum amount of fragments within the route
+        while len(route) != self.n - 1:  # Iterates until a route is found
+            for f in fragments:
                 endNode = route[len(route) - 1]
 
                 if f[0] == endNode:
