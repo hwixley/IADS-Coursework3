@@ -231,4 +231,4 @@ g4 = graph.Graph(2, "sixnodes")
 
 # Testing algorithm efficiency of Greedy VS my custom algorithm 'Temperate'
 # INPUTS: size Euclid graph = 60, size Metric graph = 10, # of randomly generated graphs to test = 500.
-calculateCostDiffs(75, 8, 500)
+calculateCostDiffs(25, 4, 100)
