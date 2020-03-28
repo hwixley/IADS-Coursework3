@@ -72,8 +72,21 @@ def createRandomMetricGraph(size, lowerEdge, upperEdge, numTests):
 # (sizeEuclid = # nodes for Euclidean graph, this also is used to determine the upper bounds)
 # (sizeMetric = # nodes for Metric graph, this also is used to determine the upper bounds)
 def calculateCostDiffs(sizeEuclid, sizeMetric, numTests):
-    costDiffsEUCLID = []  # List of % cost differences between my custom algorithm and greedy for Euclidean graphs
-    costDiffsMETRIC = []  # List of % cost differences between my custom algorithm and greedy for Metric graphs
+    toursET = []
+    toursET_s = []
+    toursEG = []
+    toursEG_s = []
+    toursMT = []
+    toursMT_s = []
+    toursMG = []
+    toursMG_s = []
+    last = -1
+    standardE = []
+    standardM = []
+    swapE = []
+    swapM = []
+    topE = []
+    topM = []
 
     if sizeMetric > 10:
         print("INPUT ERROR: 10 is the maximum Metric graph size allowed, so input has been set to default(10).\n")
@@ -84,32 +97,57 @@ def calculateCostDiffs(sizeEuclid, sizeMetric, numTests):
         createRandomMetricGraph(sizeMetric, 1, int(sizeMetric / 2), numTests)
         createRandomEuclideanGraph(sizeEuclid, 10, sizeEuclid * 10, 10, sizeEuclid * 10, numTests)
 
-        g1 = graph.Graph(-1, path + "randomEuclidGraph" + str(i) + "_size" + str(sizeEuclid) + ".txt")
-        g2 = graph.Graph(2, path + "randomMetricGraph" + str(i) + "_size" + str(sizeMetric) + ".txt")
+        ge = graph.Graph(-1, path + "randomEuclidGraph" + str(i) + "_size" + str(sizeEuclid) + ".txt")
+        gm = graph.Graph(2, path + "randomMetricGraph" + str(i) + "_size" + str(sizeMetric) + ".txt")
 
-        #   We must use different variables for each algorithm graph input
-        g1_1 = g1
-        g1_2 = g1
-        g2_1 = g2
-        g2_2 = g2
+        # EUCLIDEAN ID & SWAP
+        ge1 = ge
+        standardE.append(ge.tourValue())
+        ge.swapHeuristic()
+        ge1.TwoOptHeuristic()
+        swapE.append(ge.tourValue())
+        topE.append(ge1.tourValue())
 
-        g1_1.createRoute()
-        customVal = g1_1.tourValue()
-        g1_2.Greedy()
-        greedyVal = g1_2.tourValue()
+        # EUCLIDEAN TEMPERATE
+        ge.createRoute()
+        toursET.append(ge.tourValue())
+        ge.swapHeuristic()
+        ge.TwoOptHeuristic()
+        toursET_s.append(ge.tourValue())
 
-        costDiff = ((customVal / greedyVal) - 1) * 100
-        costDiffsEUCLID.append(costDiff)
+        # EUCLIDEAN GREEDY
+        ge.Greedy()
+        toursEG.append(ge.tourValue())
+        ge.swapHeuristic()
+        ge.TwoOptHeuristic()
+        toursEG_s.append(ge.tourValue())
 
-        g2_1.createRoute()
-        customVal = g2_1.tourValue()
-        g2_2.Greedy()
-        greedyVal = g2_2.tourValue()
+        # METRIC ID & SWAP
+        gm1 = gm
+        standardM.append(gm.tourValue())
+        gm.swapHeuristic()
+        gm1.TwoOptHeuristic()
+        swapM.append(gm.tourValue())
+        topM.append(gm1.tourValue())
 
-        costDiff = ((customVal / greedyVal) - 1) * 100
-        costDiffsMETRIC.append(costDiff)
+        # METRIC TEMPERATE
+        gm.createRoute()
+        toursMT.append(gm.tourValue())
+        gm.swapHeuristic()
+        gm.TwoOptHeuristic()
+        toursMT_s.append(gm.tourValue())
 
-        print(str(round(((i + 1) / numTests)*100, 2)) + " % of tests complete.")
+        # METRIC GREEDY
+        gm.Greedy()
+        toursMG.append(gm.tourValue())
+        gm.swapHeuristic()
+        gm.TwoOptHeuristic()
+        toursMG_s.append(gm.tourValue())
+
+        new = int(((i + 1) / numTests) * 100)
+        if new != last:
+            print(str(int(((i + 1) / numTests) * 100)) + " % of tests complete.")
+        last = new
 
     for a in range(
             numTests):  # Loop which deletes all randomly generated text file graphs, so this method can be repeated.
@@ -118,26 +156,24 @@ def calculateCostDiffs(sizeEuclid, sizeMetric, numTests):
 
     print("\nAfter generating " + str(numTests) + " random Metric (size " + str(
         sizeMetric) + ") & Euclidean (size " + str(sizeEuclid) + ") "
-          + "graphs:")
+          + "graphs, the averages are:")
+    print("-------------------------------------------------------------------------")
 
-    meanDiffEUCLID = round(sum(costDiffsEUCLID) / len(costDiffsEUCLID), 2)
-    if meanDiffEUCLID < 0:
-        sign = "lower"
-        coeff = -1
-    else:
-        sign = "higher"
-        coeff = 1
-    print("My custom algorithm has on average a " + str(
-        coeff * meanDiffEUCLID) + " % " + sign + " cost to that of greedy for Euclidean "
-                                                 "graphs.")
+    # Euclidean graph stats.
+    print("Identity = " + str(sum(standardE) / len(standardE)) + " ,  Swap = " + str(sum(swapE) / len(swapE)) +
+          " ,  2-Op = " + str(int(sum(topE) / len(topE))))
+    print("Temperate = " + str(int(sum(toursET) / len(toursET))) + " ,  Greedy = " +
+          str(int(sum(toursEG) / len(toursEG))))
+    print("Temperate w/ Swap & 2-Opt = " + str(int(sum(toursET_s) / len(toursET_s))) + " ,  Greedy w/ Swap & 2-Opt = " +
+          str(int(sum(toursEG_s) / len(toursEG_s))) + "\n")
 
-    meanDiffMETRIC = round(sum(costDiffsMETRIC) / len(costDiffsMETRIC), 2)
-    if meanDiffMETRIC < 0:
-        sign = "lower"
-    else:
-        sign = "higher"
-    print("My custom algorithm has on average a " + str(
-        meanDiffMETRIC) + " % " + sign + " cost to that of greedy for Metric graphs.")
+    # Metric graph stats.
+    print("Identity = " + str(sum(standardM) / len(standardM)) + " ,  Swap = " + str(sum(swapM) / len(swapM)) +
+          " , 2-Op = " + str(int(sum(topM) / len(topM))))
+    print("Temperate = " + str(int(sum(toursMT) / len(toursMT))) + " ,  Greedy = " +
+          str(int(sum(toursMG) / len(toursMG))))
+    print("Temperate w/ Swap & 2-Opt = " + str(int(sum(toursMT_s) / len(toursMT_s))) + " ,  Greedy w/ Swap & 2-Opt = " +
+          str(int(sum(toursMG_s) / len(toursMG_s))))
 
 
 # Default project graph initializations
@@ -155,4 +191,4 @@ print("\n")
 
 # Testing algorithm efficiency of Greedy VS my custom algorithm 'Temperate'
 # INPUTS: size Euclid graph = 60, size Metric graph = 10, # of randomly generated graphs to test = 500.
-calculateCostDiffs(30, 8, 500)
+calculateCostDiffs(25, 4, 500)
