@@ -241,7 +241,7 @@ class Graph:
         else:
             return []  # If there is no available fragment, function returns []
 
-    def cleanFragments(self, fragments):
+    def cleanFragments(self, fragments):  # Removes all repetitions/redundancies from the input list of fragments
         explored = []
         clean = []
 
@@ -258,7 +258,7 @@ class Graph:
 
         return clean
 
-    def createFragments(self):
+    def createFragments(self):  # Creates fragments/edges based on all the average node distances
         meanList = self.createDistAverages()
         fragments = []
         explored = []
@@ -272,9 +272,9 @@ class Graph:
 
         return self.cleanFragments(fragments)
 
-    def removeRepetitions(self, listVar):  # Removes all element repetitions from the input list
+    def removeRepetitions(self, listVar):  # Removes all repetitions from the input list
         removables = []
-        listVar.reverse()
+        listVar.reverse()   # List reversed in order to remove the repetitions rather than the first instance
         for a in range(len(listVar)):
             for b in range(len(listVar)):
                 if (listVar[a] == listVar[b]) and (a != b):
@@ -293,13 +293,13 @@ class Graph:
 
     # CUSTOM ALGORITHM 'TEMPERATE' APPROXIMATE OPTIMAL ROUTE FINDING FUNCTION
     def Temperate(self):
-        frags = self.createFragments()
-        route = [frags[0][0], frags[0][1]]
-        fragments = frags[1:]
-        explored = [frags[0][0], frags[0][1]]
+        frags = self.createFragments()  # Fragments created
+        route = [frags[0][0], frags[0][1]]  # Route initialized with nodes of first fragment
+        fragments = frags[1:]   # Available fragment list updated
+        explored = [frags[0][0], frags[0][1]]   # Already explored list initialized with nodes of first fragment
 
         while len(route) != self.n - 1:
-            for f in fragments:
+            for f in fragments:  # Tries to utilize the maximum amount of fragments within the route
                 endNode = route[len(route) - 1]
 
                 if f[0] == endNode:
