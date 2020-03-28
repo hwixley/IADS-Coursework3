@@ -2,7 +2,7 @@ import random
 import graph
 import os
 
-path = "./randomGraphs/"
+path = ""  # Represents the directory that the randomly generated graph textfiles will be temporarily stored.
 
 
 # PART D - Experiments
