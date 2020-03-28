@@ -13,12 +13,15 @@ path = "./randomGraphs/"
 def createRandomEuclideanGraph(size, lowerX, upperX, lowerY, upperY, numTests):
     for a in range(numTests):
         try:
+            # Creating a new graph textfile
             with open(path + "randomEuclidGraph" + str(a) + "_size" + str(size) + ".txt", "x") as file:
-                for i in range(size):
+
+                for i in range(size):   # Writing to the file (in the appropriate format)
                     randX = random.randint(lowerX, upperX)
                     randY = random.randint(lowerY, upperY)
                     spacesX = ""
                     spacesY = ""
+
                     if randX < 10:
                         spacesX = "  "
                     elif randX < 100:
@@ -33,7 +36,7 @@ def createRandomEuclideanGraph(size, lowerX, upperX, lowerY, upperY, numTests):
 
                     file.write(" " + spacesX + str(randX) + "  " + spacesY + str(randY) + strN)
                 break
-        except IOError:
+        except IOError:  # Exception for when a file is trying be initialized with an already existing name.
             if a == numTests - 1:
                 print("All allowed file names are taken for graphs with size " + str(size))
 
@@ -44,12 +47,13 @@ def createRandomEuclideanGraph(size, lowerX, upperX, lowerY, upperY, numTests):
 def createRandomMetricGraph(size, lowerEdge, upperEdge, numTests):
     for a in range(numTests):
         try:
+            # Creating a new graph textfile
             with open(path + "randomMetricGraph" + str(a) + "_size" + str(size) + ".txt", "x") as file:
                 nodes = []
                 for i in range(size):
                     nodes.append(i)
 
-                for n in nodes:
+                for n in nodes:     # Writing to the file (in the appropriate format)
                     strN = "\n"
                     if n == size - 1:
                         strN = ""
@@ -59,30 +63,29 @@ def createRandomMetricGraph(size, lowerEdge, upperEdge, numTests):
 
                         file.write(str(n) + " " + str(k) + " " + str(rand) + strN)
                 break
-        except IOError:
+        except IOError:  # Exception for when a file is trying be initialized with an already existing name.
             if a == numTests - 1:
                 print("All allowed file names are taken for graphs with size " + str(size))
 
 
-# PART D: testing with randomly created graphs
-
+# FUNCTION DESCRIPTION:
 # For every implemented algorithm it calculates their respective average tourValues for an input amount of randomly
 # generated Metric and Euclidean graphs.
-# It creates these random graphs in the form of text files, and after initialization are deleted for the sake of being
-# able to iterate this method repeatedly with a high number of tests without filling up the disk.
+# It creates these random graphs in the form of text files, and after all tourValue evaluations have been made they are
+# deleted.
 # (sizeEuclid = # nodes for Euclidean graph, this also is used to determine the upper bounds)
 # (sizeMetric = # nodes for Metric graph, this also is used to determine the upper bounds)
 # (numTests = # random graphs to generate)
 def calculateCostDiffs(sizeEuclid, sizeMetric, numTests):
     # Initializations of all relevant tourValue lists.
-    toursET, toursET_s, toursET_t, toursET_st = ([],) * 4   # tourValues of Euclidean Graphs w/ Temperate, Swap & 2-Opt
-    toursEG, toursEG_s, toursEG_t, toursEG_st = ([],) * 4   # tourValues of Euclidean Graphs w/ Greedy, Swap & 2-Opt
-    toursMT, toursMT_s, toursMT_t, toursMT_st = ([],) * 4   # tourValues of Metric Graphs w/ Temperate, Swap & 2-Opt
-    toursMG, toursMG_s, toursMG_t, toursMG_st = ([],) * 4   # tourValues of Metric Graphs w/ Greedy, Swap & 2-Opt
-    standardE, standardM = ([],) * 2    # ID tourValues of Euclidean/Metric graphs
-    swapE, swapM = ([],) * 2    # Swap tourValues of Euclidean/Metric graphs
+    toursET, toursET_s, toursET_t, toursET_st = ([],) * 4  # tourValues of Euclidean Graphs w/ Temperate, Swap & 2-Opt
+    toursEG, toursEG_s, toursEG_t, toursEG_st = ([],) * 4  # tourValues of Euclidean Graphs w/ Greedy, Swap & 2-Opt
+    toursMT, toursMT_s, toursMT_t, toursMT_st = ([],) * 4  # tourValues of Metric Graphs w/ Temperate, Swap & 2-Opt
+    toursMG, toursMG_s, toursMG_t, toursMG_st = ([],) * 4  # tourValues of Metric Graphs w/ Greedy, Swap & 2-Opt
+    standardE, standardM = ([],) * 2  # ID tourValues of Euclidean/Metric graphs
+    swapE, swapM = ([],) * 2  # Swap tourValues of Euclidean/Metric graphs
     topE, topM = ([],) * 2  # 2-Opt tourValues of Euclidean/Metric graphs
-    stE, stM = ([],) * 2    # Swap & 2-Opt tourValues of Euclidean/Metric graphs
+    stE, stM = ([],) * 2  # Swap & 2-Opt tourValues of Euclidean/Metric graphs
     last = -1
 
     # Max allowed value of parameter sizeMetric is 10, this is because our initialization for Metric graphs in the graph
@@ -131,7 +134,7 @@ def calculateCostDiffs(sizeEuclid, sizeMetric, numTests):
         toursEG_st.append(ge.tourValue())
 
         # EUCLIDEAN GRAPH: TEMPERATE TOURVALUES
-        ge.createRoute()
+        ge.Temperate()
         ge2 = ge
         toursET.append(ge.tourValue())
         ge.swapHeuristic()
@@ -169,7 +172,7 @@ def calculateCostDiffs(sizeEuclid, sizeMetric, numTests):
         toursMG_st.append(gm.tourValue())
 
         # METRIC GRAPH: TEMPERATE TOURVALUES
-        gm.createRoute()
+        gm.Temperate()
         gm2 = gm
         toursMT.append(gm.tourValue())
         gm.swapHeuristic()
@@ -181,7 +184,7 @@ def calculateCostDiffs(sizeEuclid, sizeMetric, numTests):
         gm.TwoOptHeuristic()
         toursMT_st.append(gm.tourValue())
 
-        # Output used to represent the progress of calculateCostDiffs() particularly useful for large scale tests.
+        # Output used to represent the progress of calculateCostDiffs() (particularly useful for large scale tests).
         new = int(((i + 1) / numTests) * 100)
         if new != last:
             print(str(int(((i + 1) / numTests) * 100)) + " % of tests complete.")
@@ -235,13 +238,13 @@ g3 = graph.Graph(-1, "cities75")
 g4 = graph.Graph(2, "sixnodes")
 
 # Custom algorithm implemented against g3, with Swap and 2-Op refinement algorithms.
-g3.createRoute()
+g3.Temperate()
 g3.swapHeuristic()
 g3.TwoOptHeuristic()
 print(g3.tourValue())
 print("\n")
 
 # PART D
-# Testing algorithm efficiency of Greedy VS my custom algorithm 'Temperate'
-# INPUTS: size Euclid graph = 60, size Metric graph = 10, # of randomly generated graphs to test = 500.
+# Testing algorithm efficiency at a large scale.
+# INPUTS: size Euclid graph = 25, size Metric graph = 4, # of randomly generated graphs to test = 100.
 calculateCostDiffs(25, 4, 100)

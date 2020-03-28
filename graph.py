@@ -121,9 +121,8 @@ class Graph:
             self.perm[indexI2] = newI
         return False
 
-    # Consider the effect of reversing the segment between
-    # self.perm[i] and self.perm[j], and commit to the reversal
-    # if it improves the tour value.
+    # Consider the effect of reversing the segment between self.perm[i] and self.perm[j], and commit to the reversal if
+    # it improves the tour value.
     # Return True/False depending on success.              
     def tryReverse(self, i, j):
         oldCost = self.tourValue()
@@ -136,7 +135,9 @@ class Graph:
 
         newCost = oldCost - self.dists[iInP][iIn] - self.dists[jIn][jInP] + self.dists[iInP][jIn] + self.dists[iIn][
             jInP]
-        if (self.costDiffs == 0) or (self.costDiffs == 1 and self.indexTwoOP <= 2000):    # Condition prevents endless looping in testing
+
+        # Condition that checks if the input graph was randomly generated(prevents infinite loops in calculateCostDiffs)
+        if (self.costDiffs == 0) or (self.costDiffs == 1 and self.indexTwoOP <= 2000):
             if newCost < oldCost:
                 rev = [0 for i in range(j - i + 1)]
                 for v in range(j - i + 1):
@@ -291,7 +292,7 @@ class Graph:
         return listVar
 
     # CUSTOM ALGORITHM 'TEMPERATE' APPROXIMATE OPTIMAL ROUTE FINDING FUNCTION
-    def createRoute(self):
+    def Temperate(self):
         frags = self.createFragments()
         route = [frags[0][0], frags[0][1]]
         fragments = frags[1:]
