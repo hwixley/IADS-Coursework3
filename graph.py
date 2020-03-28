@@ -152,6 +152,7 @@ class Graph:
                     better = True
 
     def TwoOptHeuristic(self):
+        index = 0
         better = True
         while better:
             better = False
@@ -159,6 +160,10 @@ class Graph:
                 for i in range(j):
                     if self.tryReverse(i, j):
                         better = True
+                        if index > 2000:
+                            better = False
+                            break
+                        index += 1
 
 
     # Implement the Greedy heuristic which builds a tour starting
