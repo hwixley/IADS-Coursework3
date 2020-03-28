@@ -72,31 +72,15 @@ def createRandomMetricGraph(size, lowerEdge, upperEdge, numTests):
 # (sizeEuclid = # nodes for Euclidean graph, this also is used to determine the upper bounds)
 # (sizeMetric = # nodes for Metric graph, this also is used to determine the upper bounds)
 def calculateCostDiffs(sizeEuclid, sizeMetric, numTests):
-    toursET = []
-    toursET_s = []
-    toursET_t = []
-    toursET_st = []
-    toursEG = []
-    toursEG_s = []
-    toursEG_t = []
-    toursEG_st = []
-    toursMT = []
-    toursMT_s = []
-    toursMT_t = []
-    toursMT_st = []
-    toursMG = []
-    toursMG_s = []
-    toursMG_t = []
-    toursMG_st = []
+    toursET, toursET_s, toursET_t, toursET_st = ([],) * 4
+    toursEG, toursEG_s, toursEG_t, toursEG_st = ([],) * 4
+    toursMT, toursMT_s, toursMT_t, toursMT_st = ([],) * 4
+    toursMG, toursMG_s, toursMG_t, toursMG_st = ([],) * 4
+    standardE, standardM = ([],) * 2
+    swapE, swapM = ([],) * 2
+    topE, topM = ([],) * 2
+    stE, stM = ([],) * 2
     last = -1
-    standardE = []
-    standardM = []
-    swapE = []
-    swapM = []
-    topE = []
-    topM = []
-    stE = []
-    stM = []
 
     if sizeMetric > 10:
         print("INPUT ERROR: 10 is the maximum Metric graph size allowed, so input has been set to default(10).\n")
@@ -115,8 +99,10 @@ def calculateCostDiffs(sizeEuclid, sizeMetric, numTests):
         standardE.append(ge.tourValue())
         ge.swapHeuristic()
         swapE.append(ge.tourValue())
+        ge1.indexTwoOP = 0
         ge1.TwoOptHeuristic()
         topE.append(ge1.tourValue())
+        ge.indexTwoOP = 0
         ge.TwoOptHeuristic()
         stE.append(ge.tourValue())
 
@@ -126,8 +112,10 @@ def calculateCostDiffs(sizeEuclid, sizeMetric, numTests):
         toursEG.append(ge.tourValue())
         ge.swapHeuristic()
         toursEG_s.append(ge.tourValue())
+        ge2.indexTwoOP = 0
         ge2.TwoOptHeuristic()
         toursEG_t.append(ge2.tourValue())
+        ge.indexTwoOP = 0
         ge.TwoOptHeuristic()
         toursEG_st.append(ge.tourValue())
 
@@ -137,8 +125,10 @@ def calculateCostDiffs(sizeEuclid, sizeMetric, numTests):
         toursET.append(ge.tourValue())
         ge.swapHeuristic()
         toursET_s.append(ge.tourValue())
+        ge2.indexTwoOP = 0
         ge2.TwoOptHeuristic()
         toursET_t.append(ge2.tourValue())
+        ge.indexTwoOP = 0
         ge.TwoOptHeuristic()
         toursET_st.append(ge.tourValue())
 
@@ -147,8 +137,10 @@ def calculateCostDiffs(sizeEuclid, sizeMetric, numTests):
         standardM.append(gm.tourValue())
         gm.swapHeuristic()
         swapM.append(gm.tourValue())
+        gm1.indexTwoOP = 0
         gm1.TwoOptHeuristic()
         topM.append(gm1.tourValue())
+        gm.indexTwoOP = 0
         gm.TwoOptHeuristic()
         stM.append(gm.tourValue())
 
@@ -158,8 +150,10 @@ def calculateCostDiffs(sizeEuclid, sizeMetric, numTests):
         toursMG.append(gm.tourValue())
         gm.swapHeuristic()
         toursMG_s.append(gm.tourValue())
+        gm2.indexTwoOP = 0
         gm2.TwoOptHeuristic()
         toursMG_t.append(gm2.tourValue())
+        gm.indexTwoOP = 0
         gm.TwoOptHeuristic()
         toursMG_st.append(gm.tourValue())
 
@@ -169,8 +163,10 @@ def calculateCostDiffs(sizeEuclid, sizeMetric, numTests):
         toursMT.append(gm.tourValue())
         gm.swapHeuristic()
         toursMT_s.append(gm.tourValue())
+        gm2.indexTwoOP = 0
         gm2.TwoOptHeuristic()
         toursMT_t.append(gm2.tourValue())
+        gm.indexTwoOP = 0
         gm.TwoOptHeuristic()
         toursMT_st.append(gm.tourValue())
 
@@ -192,30 +188,33 @@ def calculateCostDiffs(sizeEuclid, sizeMetric, numTests):
     # Euclidean graph stats.
     print("EUCLIDEAN:")
     print("Identity = " + str(int(sum(standardE) / len(standardE))) + " ,  Swap = " + str(int(sum(swapE) / len(swapE)))
-          + " ,  2-Op = " + str(int(sum(topE) / len(topE))) + " ,  Swap & 2-Opt = " + str(int(sum(stE)/len(stE))))
+          + " ,  2-Op = " + str(int(sum(topE) / len(topE))) + " ,  Swap & 2-Opt = " + str(int(sum(stE) / len(stE))))
     print("Temperate = " + str(int(sum(toursET) / len(toursET))) + " ,  Greedy = " +
           str(int(sum(toursEG) / len(toursEG))))
     print("Temperate w/ Swap = " + str(int(sum(toursET_s) / len(toursET_s))) + " ,  Greedy w/ Swap = " +
           str(int(sum(toursEG_s) / len(toursEG_s))))
-    print("Temperate w/ 2-Opt = " + str(int(sum(toursET_t)/len(toursET_t))) + " ,  Greedy w/ 2-Opt = " +
-          str(int(sum(toursEG_t)/len(toursEG_t))))
-    print("Temperate w/ Swap & 2-Opt = " + str(int(sum(toursET_st)/len(toursET_st))) + ",  Greedy w/ Swap & 2-Opt = " +
-          str(int(sum(toursEG_st)/len(toursEG_st))) + "\n")
+    print("Temperate w/ 2-Opt = " + str(int(sum(toursET_t) / len(toursET_t))) + " ,  Greedy w/ 2-Opt = " +
+          str(int(sum(toursEG_t) / len(toursEG_t))))
+    print(
+        "Temperate w/ Swap & 2-Opt = " + str(int(sum(toursET_st) / len(toursET_st))) + ",  Greedy w/ Swap & 2-Opt = " +
+        str(int(sum(toursEG_st) / len(toursEG_st))) + "\n")
 
     # Metric graph stats.
     print("METRIC:")
     print("Identity = " + str(int(sum(standardM) / len(standardM))) + " ,  Swap = " + str(int(sum(swapM) / len(swapM)))
-          + " ,  2-Op = " + str(int(sum(topM) / len(topM))) + " ,  Swap & 2-Opt = " + str(int(sum(stM)/len(stM))))
+          + " ,  2-Op = " + str(int(sum(topM) / len(topM))) + " ,  Swap & 2-Opt = " + str(int(sum(stM) / len(stM))))
     print("Temperate = " + str(int(sum(toursMT) / len(toursMT))) + " ,  Greedy = " +
           str(int(sum(toursMG) / len(toursMG))))
     print("Temperate w/ Swap = " + str(int(sum(toursMT_s) / len(toursMT_s))) + " ,  Greedy w/ Swap = " +
           str(int(sum(toursMG_s) / len(toursMG_s))))
-    print("Temperate w/ 2-Opt = " + str(int(sum(toursMT_t)/len(toursMT_t))) + " ,  Greedy w/ 2-Opt = " +
-          str(int(sum(toursMG_t)/len(toursMG_t))))
-    print("Temperate w/ Swap & 2-Opt = " + str(int(sum(toursMT_st)/len(toursMT_st))) + ",  Greedy w/ Swap & 2-Opt = " +
-          str(int(sum(toursMG_st)/len(toursMG_st))) + "\n")
+    print("Temperate w/ 2-Opt = " + str(int(sum(toursMT_t) / len(toursMT_t))) + " ,  Greedy w/ 2-Opt = " +
+          str(int(sum(toursMG_t) / len(toursMG_t))))
+    print(
+        "Temperate w/ Swap & 2-Opt = " + str(int(sum(toursMT_st) / len(toursMT_st))) + ",  Greedy w/ Swap & 2-Opt = " +
+        str(int(sum(toursMG_st) / len(toursMG_st))) + "\n")
 
 
+# PART A -> C
 # Default project graph initializations
 g1 = graph.Graph(-1, "cities25")
 g2 = graph.Graph(-1, "cities50")
@@ -229,6 +228,7 @@ g4 = graph.Graph(2, "sixnodes")
 # print(g3.tourValue())
 # print("\n")
 
+# PART D
 # Testing algorithm efficiency of Greedy VS my custom algorithm 'Temperate'
 # INPUTS: size Euclid graph = 60, size Metric graph = 10, # of randomly generated graphs to test = 500.
 calculateCostDiffs(25, 4, 100)

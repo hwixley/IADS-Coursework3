@@ -1,6 +1,8 @@
 import math
 from operator import itemgetter  # Solely for the implementation of my own algorithm
 
+indexTwoOP = 0
+
 
 def euclid(p, q):
     x = p[0] - q[0]
@@ -122,6 +124,7 @@ class Graph:
     # Return True/False depending on success.              
     def tryReverse(self, i, j):
         oldCost = self.tourValue()
+        self.indexTwoOP += 1
 
         iIn = self.perm[i]
         iInP = self.perm[i - 1]
@@ -131,7 +134,7 @@ class Graph:
         newCost = oldCost - self.dists[iInP][iIn] - self.dists[jIn][jInP] + self.dists[iInP][jIn] + self.dists[iIn][
             jInP]
 
-        if newCost < oldCost:
+        if newCost < oldCost and self.indexTwoOP <= 2000:
             rev = [0 for i in range(j - i + 1)]
             for v in range(j - i + 1):
                 rev[v] = (self.perm[i + v])
@@ -152,7 +155,6 @@ class Graph:
                     better = True
 
     def TwoOptHeuristic(self):
-        index = 0
         better = True
         while better:
             better = False
@@ -160,11 +162,6 @@ class Graph:
                 for i in range(j):
                     if self.tryReverse(i, j):
                         better = True
-                        if index > 2000:
-                            better = False
-                            break
-                        index += 1
-
 
     # Implement the Greedy heuristic which builds a tour starting
     # from node 0, taking the closest (unused) node as 'next'
