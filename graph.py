@@ -136,7 +136,7 @@ class Graph:
 
         newCost = oldCost - self.dists[iInP][iIn] - self.dists[jIn][jInP] + self.dists[iInP][jIn] + self.dists[iIn][
             jInP]
-        if (costDiffs == 0) or (costDiffs == 1 and self.indexTwoOP <= 2000):    # Condition prevents endless looping in testing
+        if (self.costDiffs == 0) or (self.costDiffs == 1 and self.indexTwoOP <= 2000):    # Condition prevents endless looping in testing
             if newCost < oldCost:
                 rev = [0 for i in range(j - i + 1)]
                 for v in range(j - i + 1):
