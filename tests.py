@@ -94,6 +94,9 @@ def calculateCostDiffs(sizeEuclid, sizeMetric, numTests):
         ge = graph.Graph(-1, path + "randomEuclidGraph" + str(i) + "_size" + str(sizeEuclid) + ".txt")
         gm = graph.Graph(2, path + "randomMetricGraph" + str(i) + "_size" + str(sizeMetric) + ".txt")
 
+        ge.costDiffs = 1
+        gm.costDiffs = 1
+
         # EUCLIDEAN ID & SWAP
         ge1 = ge
         standardE.append(ge.tourValue())
@@ -222,13 +225,13 @@ g3 = graph.Graph(-1, "cities75")
 g4 = graph.Graph(2, "sixnodes")
 
 # Custom algorithm implemented against g3, with Swap and 2-Op refinement algorithms.
-# g3.createRoute()
-# g3.swapHeuristic()
-# g3.TwoOptHeuristic()
-# print(g3.tourValue())
-# print("\n")
+g3.createRoute()
+g3.swapHeuristic()
+g3.TwoOptHeuristic()
+print(g3.tourValue())
+print("\n")
 
 # PART D
 # Testing algorithm efficiency of Greedy VS my custom algorithm 'Temperate'
 # INPUTS: size Euclid graph = 60, size Metric graph = 10, # of randomly generated graphs to test = 500.
-calculateCostDiffs(25, 4, 100)
+#calculateCostDiffs(25, 4, 100)

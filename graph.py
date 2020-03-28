@@ -2,6 +2,7 @@ import math
 from operator import itemgetter  # Solely for the implementation of my own algorithm
 
 indexTwoOP = 0
+costDiffs = 0
 
 
 def euclid(p, q):
@@ -21,6 +22,8 @@ class Graph:
         numNodes = 0
         points = []
         self.dists = []
+        self.indexTwoOP = 0
+        self.costDiffs = 0
 
         if n == -1:
             for line in file:
@@ -133,16 +136,16 @@ class Graph:
 
         newCost = oldCost - self.dists[iInP][iIn] - self.dists[jIn][jInP] + self.dists[iInP][jIn] + self.dists[iIn][
             jInP]
+        if (costDiffs == 0) or (costDiffs == 1 and self.indexTwoOP <= 2000):    # Condition prevents endless looping in testing
+            if newCost < oldCost:
+                rev = [0 for i in range(j - i + 1)]
+                for v in range(j - i + 1):
+                    rev[v] = (self.perm[i + v])
 
-        if newCost < oldCost and self.indexTwoOP <= 2000:
-            rev = [0 for i in range(j - i + 1)]
-            for v in range(j - i + 1):
-                rev[v] = (self.perm[i + v])
+                for z in range(j - i + 1):
+                    self.perm[i + z] = rev[j - i - z]
 
-            for z in range(j - i + 1):
-                self.perm[i + z] = rev[j - i - z]
-
-            return True
+                return True
         else:
             return False
 
