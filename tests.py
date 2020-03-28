@@ -66,38 +66,46 @@ def createRandomMetricGraph(size, lowerEdge, upperEdge, numTests):
 
 # PART D: testing with randomly created graphs
 
-# Calculates mean % cost differences between my algorithm and that of greedy, for 4 Metric and Euclidean graphs.
+# For every implemented algorithm it calculates their respective average tourValues for an input amount of randomly
+# generated Metric and Euclidean graphs.
 # It creates these random graphs in the form of text files, and after initialization are deleted for the sake of being
 # able to iterate this method repeatedly with a high number of tests without filling up the disk.
 # (sizeEuclid = # nodes for Euclidean graph, this also is used to determine the upper bounds)
 # (sizeMetric = # nodes for Metric graph, this also is used to determine the upper bounds)
+# (numTests = # random graphs to generate)
 def calculateCostDiffs(sizeEuclid, sizeMetric, numTests):
-    toursET, toursET_s, toursET_t, toursET_st = ([],) * 4
-    toursEG, toursEG_s, toursEG_t, toursEG_st = ([],) * 4
-    toursMT, toursMT_s, toursMT_t, toursMT_st = ([],) * 4
-    toursMG, toursMG_s, toursMG_t, toursMG_st = ([],) * 4
-    standardE, standardM = ([],) * 2
-    swapE, swapM = ([],) * 2
-    topE, topM = ([],) * 2
-    stE, stM = ([],) * 2
+    # Initializations of all relevant tourValue lists.
+    toursET, toursET_s, toursET_t, toursET_st = ([],) * 4   # tourValues of Euclidean Graphs w/ Temperate, Swap & 2-Opt
+    toursEG, toursEG_s, toursEG_t, toursEG_st = ([],) * 4   # tourValues of Euclidean Graphs w/ Greedy, Swap & 2-Opt
+    toursMT, toursMT_s, toursMT_t, toursMT_st = ([],) * 4   # tourValues of Metric Graphs w/ Temperate, Swap & 2-Opt
+    toursMG, toursMG_s, toursMG_t, toursMG_st = ([],) * 4   # tourValues of Metric Graphs w/ Greedy, Swap & 2-Opt
+    standardE, standardM = ([],) * 2    # ID tourValues of Euclidean/Metric graphs
+    swapE, swapM = ([],) * 2    # Swap tourValues of Euclidean/Metric graphs
+    topE, topM = ([],) * 2  # 2-Opt tourValues of Euclidean/Metric graphs
+    stE, stM = ([],) * 2    # Swap & 2-Opt tourValues of Euclidean/Metric graphs
     last = -1
 
+    # Max allowed value of parameter sizeMetric is 10, this is because our initialization for Metric graphs in the graph
+    # class only accounts for single digit nodes and edge costs.
     if sizeMetric > 10:
         print("INPUT ERROR: 10 is the maximum Metric graph size allowed, so input has been set to default(10).\n")
         sizeMetric = 10
 
     print("Function calculateCostDiffs initialized with " + str(numTests) + " graphs to generate and test:")
     for i in range(numTests):
+        # Initializations of the random graphs for a given test iteration
         createRandomMetricGraph(sizeMetric, 1, sizeMetric - int(sizeMetric / 4), numTests)
         createRandomEuclideanGraph(sizeEuclid, 10, sizeEuclid * 10, 10, sizeEuclid * 10, numTests)
 
+        # Parsing the given Euclidean/Metric graph textfile representation into a class instance
         ge = graph.Graph(-1, path + "randomEuclidGraph" + str(i) + "_size" + str(sizeEuclid) + ".txt")
         gm = graph.Graph(2, path + "randomMetricGraph" + str(i) + "_size" + str(sizeMetric) + ".txt")
 
+        # Class variables used to denote whether a search is being done on a random graph (to prevent infinite loops).
         ge.costDiffs = 1
         gm.costDiffs = 1
 
-        # EUCLIDEAN ID & SWAP
+        # EUCLIDEAN GRAPH: ID, SWAP, & 2-OPT TOURVALUES
         ge1 = ge
         standardE.append(ge.tourValue())
         ge.swapHeuristic()
@@ -109,7 +117,7 @@ def calculateCostDiffs(sizeEuclid, sizeMetric, numTests):
         ge.TwoOptHeuristic()
         stE.append(ge.tourValue())
 
-        # EUCLIDEAN GREEDY
+        # EUCLIDEAN GRAPH: GREEDY TOURVALUES
         ge.Greedy()
         ge2 = ge
         toursEG.append(ge.tourValue())
@@ -122,7 +130,7 @@ def calculateCostDiffs(sizeEuclid, sizeMetric, numTests):
         ge.TwoOptHeuristic()
         toursEG_st.append(ge.tourValue())
 
-        # EUCLIDEAN TEMPERATE
+        # EUCLIDEAN GRAPH: TEMPERATE TOURVALUES
         ge.createRoute()
         ge2 = ge
         toursET.append(ge.tourValue())
@@ -135,7 +143,7 @@ def calculateCostDiffs(sizeEuclid, sizeMetric, numTests):
         ge.TwoOptHeuristic()
         toursET_st.append(ge.tourValue())
 
-        # METRIC ID & SWAP
+        # METRIC GRAPH: ID, SWAP, & 2-OPT TOURVALUES
         gm1 = gm
         standardM.append(gm.tourValue())
         gm.swapHeuristic()
@@ -147,7 +155,7 @@ def calculateCostDiffs(sizeEuclid, sizeMetric, numTests):
         gm.TwoOptHeuristic()
         stM.append(gm.tourValue())
 
-        # METRIC GREEDY
+        # METRIC GRAPH: GREEDY TOURVALUES
         gm.Greedy()
         gm2 = gm
         toursMG.append(gm.tourValue())
@@ -160,7 +168,7 @@ def calculateCostDiffs(sizeEuclid, sizeMetric, numTests):
         gm.TwoOptHeuristic()
         toursMG_st.append(gm.tourValue())
 
-        # METRIC TEMPERATE
+        # METRIC GRAPH: TEMPERATE TOURVALUES
         gm.createRoute()
         gm2 = gm
         toursMT.append(gm.tourValue())
@@ -173,16 +181,18 @@ def calculateCostDiffs(sizeEuclid, sizeMetric, numTests):
         gm.TwoOptHeuristic()
         toursMT_st.append(gm.tourValue())
 
+        # Output used to represent the progress of calculateCostDiffs() particularly useful for large scale tests.
         new = int(((i + 1) / numTests) * 100)
         if new != last:
             print(str(int(((i + 1) / numTests) * 100)) + " % of tests complete.")
         last = new
 
-    for a in range(
-            numTests):  # Loop which deletes all randomly generated text file graphs, so this method can be repeated.
+    # Loop which deletes all randomly generated text file graphs, so calculateCostDiffs can be repeated with ease.
+    for a in range(numTests):
         os.remove(path + "randomEuclidGraph" + str(a) + "_size" + str(sizeEuclid) + ".txt")
         os.remove(path + "randomMetricGraph" + str(a) + "_size" + str(sizeMetric) + ".txt")
 
+    # Printing all outputs
     print("\nAfter generating " + str(numTests) + " random Metric (size " + str(
         sizeMetric) + ") & Euclidean (size " + str(sizeEuclid) + ") "
           + "graphs, the averages are:")
